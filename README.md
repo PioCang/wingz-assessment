@@ -38,3 +38,11 @@ python manage.py createsuperuser
 ```
 python manage.py runserver 8000
 ```
+
+
+## Some Design choices
+1. In the spec, primary the format `id_<model_name`. I've simplified them to use `id` that's readily supplied by Django to be the primary keys per table.
+2. Similarly, Foreign Keys will use just `<model_name>` as the foreign key (but under the hood Django uses `<model_name>_id`).
+3. Users can't be hard-deleted, but are instead soft-deleted using an `is_active` flag.
+4. Ride deletions cascase into RideEvent deletions
+5. All models have `created_at` and `last_modified_at` timestamps just for better recordkeeping.
