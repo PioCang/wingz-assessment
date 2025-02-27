@@ -1,5 +1,4 @@
-from django.contrib.auth.base_user import AbstractBaseUser
-from django.contrib.auth.models import UserManager
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -18,16 +17,13 @@ class TimeStampedModel(models.Model):
         abstract = True
 
 
-class User(AbstractBaseUser, TimeStampedModel):
+class User(AbstractUser, TimeStampedModel):
     """Represents a user on the platform.
 
     Email field is an alternate primary key.
     We don't delete Users, instead we soft-delete using the `is_active` tag.
     """
 
-    objects = UserManager()
-
-    username = models.CharField(max_length=64, unique=True)
     is_active = models.BooleanField(default=True)
     role = models.CharField(
         max_length=32,
