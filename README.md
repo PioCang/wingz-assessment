@@ -43,7 +43,7 @@ python manage.py runserver 8000
 ## Some Design choices
 1. In the spec, primary keys take on the format `id_<model_name`. I've simplified them to use `id` that's readily supplied by Django to be the default primary key on any table.
 2. Similarly, Foreign Keys will use just `<model_name>` as the foreign key (but under the hood Django uses `<model_name>_id`).
-3. The instructions' wording leads me to believe that a majority of the optimization concerns center around the Ride List API. Therefore, I want to make it clear that my approach to this coding assessment places emphasis on the performance and optimization efforts _solely_ towards the **Ride List API**. With that said, no such optimization efforts were expended towards the rest of the CRUD operations on the rest of the models.
+3. The instructions' wording leads me to believe that a majority of the optimization concerns center around the Ride List API. Therefore, I want to make it clear that my approach to this coding assessment places utmost emphasis towards the performance and optimization efforts of the **Ride List API**. With that said, far behind is the level of care expended towards the rest of the CRUD operations on the rest of the models.
 
 
 ## 2 Using the app's APIs
