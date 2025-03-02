@@ -1,7 +1,9 @@
 import pytest
+import pytz
+from datetime import datetime
 from rest_framework.test import APIClient
-from rideshare.enums import UserRoleChoices
-from rideshare.models import User
+from rideshare.enums import UserRoleChoices, RideStatusChoices
+from rideshare.models import User, Ride, RideEvent
 
 
 @pytest.fixture
@@ -30,6 +32,29 @@ def rider():
 def driver():
     return User.objects.create_user(
         username="driver", password="pass", email="driver@example.com"
+    )
+
+
+@pytest.fixture
+def ride(rider, driver):
+    return Ride.objects.create(
+        status=RideStatusChoices.INIT,
+        rider=rider,
+        driver=driver,
+        pickup_latitude=10.3168,
+        pickup_longitude=123.8906,
+        dropoff_latitude=14.6091,
+        dropoff_longitude=121.0223,
+        pickup_time=datetime(2025, 3, 1, 0, 0, 0, 0, pytz.UTC),
+    )
+
+
+@pytest.fixture
+def ride_event(ride):
+    return RideEvent.objects.create(
+        ride=ride,
+        description="Ride started",
+        created_at=datetime(2025, 3, 1, 0, 0, 1, 0, pytz.UTC),
     )
 
 
