@@ -5,19 +5,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from .enums import RideStatusChoices, UserRoleChoices
 
 
-class TimeStampedModel(models.Model):
-    """An abstract base class model that provides self-updating `created_at`
-    and `modified_at` fields.
-    """
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    last_modified_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        abstract = True
-
-
-class User(AbstractUser, TimeStampedModel):
+class User(AbstractUser):
     """Represents a user on the platform.
 
     Email field is an alternate primary key.
@@ -36,7 +24,7 @@ class User(AbstractUser, TimeStampedModel):
     phone_number = PhoneNumberField(blank=True, null=False)
 
 
-class Ride(TimeStampedModel):
+class Ride(models.Model):
     """Represents details of a Ride."""
 
     status = models.CharField(
@@ -57,9 +45,10 @@ class Ride(TimeStampedModel):
     pickup_time = models.DateTimeField(blank=True, null=False)
 
 
-class RideEvent(TimeStampedModel):
+class RideEvent(models.Model):
     """Represents an Event that takes place over the course of a Ride"""
 
+    created_at = models.DateTimeField(blank=False, null=False)
     ride = models.ForeignKey(
         Ride, related_name="ride_events", on_delete=models.CASCADE
     )
