@@ -29,7 +29,7 @@ from .pagination import BasicPagination
 class UserViewSet(ModelViewSet):
     """API endpoint that allows users to be viewed or edited."""
 
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by("username")
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
     pagination_class = BasicPagination
@@ -215,7 +215,7 @@ class RideViewSet(ModelViewSet):
 class RideEventViewSet(ModelViewSet):
     """API endpoint that allows ride events to be viewed or edited."""
 
-    queryset = RideEvent.objects.all()
+    queryset = RideEvent.objects.all().order_by("created_at")
     serializer_class = RideEventSerializer
     permission_classes = [IsAdminUser]
     pagination_class = BasicPagination
