@@ -68,7 +68,20 @@ curl -X GET "http://127.0.0.1:8000/users/" \
      -H "Authorization: Token <YOUR_AUTH_TOKEN>"
 ```
 
-### **Example Response:**
+### **Example POST payload**
+```json
+{
+    "username": "snoop",
+    "first_name": "Snoop",
+    "last_name": "Dogg",
+    "email": "snoop@snoop.com",
+    "phone_number": "+639185550123",
+    "role": "admin",
+    "is_active": true
+}
+```
+
+### **Example GET Response:**
 ```json
 {
     "count": 1,
@@ -96,7 +109,7 @@ curl -X GET "http://127.0.0.1:8000/users/" \
 ### **Endpoint:** `/rides/`
 **Description:**
 - Allows **admin users** to view, create, update, and delete rides.
-- Supports **filters**, **sorting**, and **distance annotation**.
+- Supports **filters**, **sorting**, **distance annotation**, and fetches **today's ride events**.
 - Supports **pagination** (`BasicPagination`).
 
 ### **Allowed Methods:**
@@ -110,11 +123,13 @@ curl -X GET "http://127.0.0.1:8000/users/" \
 ```
 
 ### **Filters:** (via query parameters)
+The supported query parameters for GET requests on Rides API.
+Params with (*) are required, the rest are optional.
 ```yaml
+* lat: float # Latitude coordinate of the driver presently.
+* lon: float  # Longitude coordinate of the driver presently.
 status: string  # Filter rides by status (case-sensitive). Must be in ['init', 'pickup', 'enroute', 'droppoff']
 email: string  # Filter rides by rider email (case-insensitive) but must match whole string.
-lat: float # Latitude coordinate of the driver presently.
-lon: float  # Longitude coordinate of the driver presently.
 sort_by: string  # Sort by `pickup_time` (default) or `distance`.
 ```
 
@@ -124,7 +139,21 @@ curl -X GET "http://127.0.0.1:8000/rides/?status=init&email=johndoe@example.com&
      -H "Authorization: Token <YOUR_AUTH_TOKEN>"
 ```
 
-### **Example Response:**
+### **Example POST payload**
+```json
+{
+    "status": "init",
+    "rider": 4,
+    "driver": 3,
+    "pickup_latitude": 10.352651,
+    "pickup_longitude": 123.945389,
+    "dropoff_latitude": 14.6091,
+    "dropoff_longitude": 121.0223,
+    "pickup_time": "2025-03-01T14:30:00Z"
+}
+```
+
+### **Example GET Response:**
 ```json
 {
     "count": 1,
@@ -164,7 +193,7 @@ curl -X GET "http://127.0.0.1:8000/rides/?status=init&email=johndoe@example.com&
                 {
                     "id": 1,
                     "ride": 1,
-                    "description": "Burnout",
+                    "description": "Ride started",
                     "created_at": "2025-03-02T11:38:37.356811Z",
                 }
             ],
@@ -198,13 +227,22 @@ curl -X GET "http://127.0.0.1:8000/ride-events/" \
      -H "Authorization: Token <YOUR_AUTH_TOKEN>"
 ```
 
-### **Example Response:**
+### **Example POST Payload
 ```json
 {
-  "count": 10,
+  "ride": 1,
+  "description": "Ride started",
+  "created_at": "2025-03-01T14:31:00Z"
+}
+```
+
+### **Example GET Response:**
+```json
+{
+  "count": 1,
   "results": [
     {
-      "id": 301,
+      "id": 1,
       "ride": 1,
       "description": "Ride started",
       "created_at": "2025-03-01T14:31:00Z"
