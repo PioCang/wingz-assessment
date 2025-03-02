@@ -128,7 +128,7 @@ Params with (*) are required, the rest are optional.
 ```yaml
 * lat: float # Latitude coordinate of the driver presently.
 * lon: float  # Longitude coordinate of the driver presently.
-status: string  # Filter rides by status (case-sensitive). Must be in ['init', 'pickup', 'enroute', 'droppoff']
+status: string  # Filter rides by status (case-sensitive). Must be in ['init', 'pickup', 'enroute', 'dropoff']
 email: string  # Filter rides by rider email (case-insensitive) but must match whole string.
 sort_by: string  # Sort by `pickup_time` (default) or `distance`.
 ```

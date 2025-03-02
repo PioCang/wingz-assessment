@@ -16,4 +16,4 @@ class RideStatusChoices(models.TextChoices):
     INIT = ("init", "Ride request created.")
     PICKUP = ("pickup", "Driver to pick up rider.")
     ENROUTE = ("enroute", "Ride commenced to destination.")
-    DROPOFF = ("droppoff", "Rider dropped off.")
+    DROPOFF = ("dropoff", "Rider dropped off.")
