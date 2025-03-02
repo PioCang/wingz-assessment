@@ -1,11 +1,9 @@
-import pytest
-
-from rest_framework.exceptions import ValidationError
-from datetime import timedelta
-from django.utils import timezone
-
 from copy import deepcopy
+from datetime import timedelta
 
+import pytest
+from django.utils import timezone
+from rest_framework.exceptions import ValidationError
 from rideshare.enums import RideStatusChoices
 from rideshare.models import Ride
 from rideshare.views.rides import RideViewSet
@@ -213,3 +211,47 @@ class TestRidesListUtils:
         assert len(today_event_list) == 1
         assert ride_event not in today_event_list
         assert event_today == today_event_list[0]
+
+    def test_prefetch_excludes_ride_events_from_irrelevant_rides(
+        self, ride, ride_event
+    ):
+        """RideEvents from Rides not in the results list shouldn't appear"""
+
+        event_today = deepcopy(ride_event)
+        event_today.created_at = timezone.now()
+        event_today.pk = None
+        event_today.save()
+
+        irrelevant_ride = deepcopy(ride)
+        irrelevant_ride.status = RideStatusChoices.DROPOFF
+        irrelevant_ride.pk = None
+        irrelevant_ride.save()
+
+        irrelevant_event_today = deepcopy(ride_event)
+        irrelevant_event_today.ride = irrelevant_ride
+        irrelevant_event_today.created_at = timezone.now()
+        irrelevant_event_today.pk = None
+        irrelevant_event_today.save()
+
+        irrelevant_event_yesterday = deepcopy(irrelevant_event_today)
+        irrelevant_event_yesterday.created_at = timezone.now() - timedelta(
+            days=1
+        )
+        irrelevant_event_yesterday.pk = None
+        irrelevant_event_yesterday.save()
+
+        query_params = {"status": ride.status}
+        queryset = Ride.objects.all()
+        queryset = RideViewSet().apply_filter_on_status(queryset, query_params)
+        results = RideViewSet().apply_prefetch_on_ride_events(queryset)
+
+        assert len(results) == 1
+        assert ride == results[0]
+        assert irrelevant_ride not in results
+
+        today_event_list = results[0].todays_ride_events
+        assert len(today_event_list) == 1
+        assert ride_event not in today_event_list
+        assert event_today == today_event_list[0]
+        assert irrelevant_event_today not in today_event_list
+        assert irrelevant_event_yesterday not in today_event_list

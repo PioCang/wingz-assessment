@@ -3,10 +3,6 @@ repos:
     rev: v0.19.1
     hooks:
       - id: gitlint
-  # - repo: https://github.com/pre-commit/mirrors-isort
-  #   rev: v5.10.1
-  #   hooks:
-  #     - id: isort
   - repo: https://github.com/psf/black
     rev: 25.1.0
     hooks:
@@ -25,6 +21,10 @@ repos:
   #           '-s=B101,B301,B403,B308,B303,B608',
   #           '-b=bandit_baseline.json',
   #         ]
+  - repo: https://github.com/pre-commit/mirrors-isort
+    rev: v5.10.1
+    hooks:
+      - id: isort
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
