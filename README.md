@@ -1,5 +1,13 @@
 # wingz-assessment
-## Prepping the venv to run the server
+
+## Foreword: Some Design choices
+1. In the spec, primary keys take on the format `id_<model_name>`. I've simplified them to use `id` that's readily supplied by Django to be the default primary key on any table.
+2. Similarly, Foreign Keys will use just `<model_name>` as the foreign key (but under the hood Django uses `<model_name>_id`).
+3. The instructions' wording leads me to believe that a majority of the optimization concerns center around the Ride List API. Therefore, I want to make it clear that my approach to this coding assessment places utmost emphasis towards the performance and optimization efforts of the **Ride List API**. With that said, far behind is the level of care expended towards the rest of the CRUD operations on the rest of the models.
+4. I've decided to use the Haversine formula to compute for geo-distance.
+5. I made the decision to have `lat` and `lon` be required inputs for the Ride List API, with the rationale being: someone looking for a ride would likely want to see distance-to-pickup even if their sort preference is by pickup_time.
+
+## Preparations
 Let's prep a virtual env, I assume you have *pyenv* installed.
 For a small application, I want to avoid the memory overhead involved with Docker containers.
 
@@ -17,6 +25,7 @@ git clone https://github.com/PioCang/wingz-assessment.git
 3. We run everything inside this folder
 ```
 cd wingz-assessment/wingz/
+mkdir static
 ```
 
 4. Install the requirements. (Ensure the `wingz` virtual env is activated.)
@@ -29,27 +38,39 @@ pip install -r requirements.txt
 python manage.py migrate
 ```
 
-6. [Optional step] create a superuser. It's not necessary, but you can do so if you wish. Run this command and follow the prompts
+6. Let's create the `static` folder for profiling the queries.
+```
+python manage.py collectstatic
+```
+
+7. Create a superuser by following the prompts
 ```
 python manage.py createsuperuser
 ```
 
-7. Run the server
+8. Run the server
 ```
 python manage.py runserver 8000
 ```
 
+The server will be hosted on http://localhost:8000/
 
-## Some Design choices
-1. In the spec, primary keys take on the format `id_<model_name>`. I've simplified them to use `id` that's readily supplied by Django to be the default primary key on any table.
-2. Similarly, Foreign Keys will use just `<model_name>` as the foreign key (but under the hood Django uses `<model_name>_id`).
-3. The instructions' wording leads me to believe that a majority of the optimization concerns center around the Ride List API. Therefore, I want to make it clear that my approach to this coding assessment places utmost emphasis towards the performance and optimization efforts of the **Ride List API**. With that said, far behind is the level of care expended towards the rest of the CRUD operations on the rest of the models.
-4. I've decided to use the Haversine formula to compute for geo-distance.
-5. I made the decision to have `lat` and `lon` be required inputs for the Ride List API, with the rationale being: someone looking for a ride would likely want to see distance-to-pickup even if their sort preference is by pickup_time.
+9. Grant the superuser you just created with Admin role in [Users Admin page](http://localhost:8000/admin/rideshare/user/1/change/) and save.
 
 
 ## 2 Using the app's APIs
-Please refer to [ENDPOINTS.md](./ENDPOINTS.md)
+To use the API and endpoints, you must first Login your user. Please refer to [ENDPOINTS.md](./ENDPOINTS.md)
+
+An HTTP Archive file [requests.har](./requests.har) is provided for you but you have to provide the auth Token yourself.
+
+
+
+---
+### Profiling using Silk
+You can access the SQL profiling of the requests in
+http://localhost:8000/silk/requests/
+
+The proof that only 3 SQL queries were done for the Rides List API is in [sql_profile_proof.png](sql_profile_proof.png)
 
 
 ## 3 Teardown

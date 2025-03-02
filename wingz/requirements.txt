@@ -1,15 +1,19 @@
 asgiref==3.8.1
 astroid==3.3.8
 asttokens==3.0.0
+autopep8==2.3.2
 decorator==5.2.1
 dill==0.3.9
 Django==5.1.6
 django-extensions==3.2.3
 django-phonenumber-field==8.0.0
 django-rest-framework==0.1.0
+django-silk==5.3.2
 djangorestframework==3.15.2
 executing==2.2.0
+gprof2dot==2024.6.6
 iniconfig==2.0.0
+ipdb==0.13.13
 ipython==8.32.0
 isort==6.0.1
 jedi==0.19.2
@@ -24,6 +28,7 @@ pluggy==1.5.0
 prompt_toolkit==3.0.50
 ptyprocess==0.7.0
 pure_eval==0.2.3
+pycodestyle==2.12.1
 Pygments==2.19.1
 pylint==3.3.4
 pylint-django==2.6.1
