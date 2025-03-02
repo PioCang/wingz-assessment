@@ -17,8 +17,9 @@ from rideshare.enums import RideStatusChoices
 from rideshare.models import Ride, RideEvent, User
 from rideshare.permissions import IsAdminUser
 from rideshare.serializers import (
+    RideBasicSerializer,
+    RideComplexSerializer,
     RideEventSerializer,
-    RideSerializer,
     UserSerializer,
 )
 
@@ -37,9 +38,14 @@ class UserViewSet(ModelViewSet):
 class RideViewSet(ModelViewSet):
     """API endpoint that allows rides to be viewed or edited."""
 
-    serializer_class = RideSerializer
     permission_classes = [IsAdminUser]
     pagination_class = BasicPagination
+
+    def get_serializer_class(self, *args, **kwargs):
+        """Use the more complex serialiizer for GET requests"""
+        if self.action == "list":
+            return RideComplexSerializer
+        return RideBasicSerializer
 
     def get_queryset(self):
         """Custom implementation as specified by instructions
@@ -130,7 +136,7 @@ class RideViewSet(ModelViewSet):
         try:
             input_latitude = float(input_latitude)
             input_longitude = float(input_longitude)
-        except TypeError as e:
+        except (ValueError, TypeError) as e:
             raise ValidationError("lat and lon must both be float type") from e
 
         haversine_equation = (

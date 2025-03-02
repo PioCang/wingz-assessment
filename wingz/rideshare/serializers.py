@@ -42,7 +42,29 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
 
-class RideSerializer(serializers.ModelSerializer):
+class RideBasicSerializer(serializers.ModelSerializer):
+    rider = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    driver = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+
+    class Meta:
+        model = Ride
+        fields = [
+            "id",
+            "status",
+            "rider",
+            "driver",
+            "pickup_latitude",
+            "pickup_longitude",
+            "dropoff_latitude",
+            "dropoff_longitude",
+            "pickup_time",
+            "created_at",
+            "last_modified_at",
+        ]
+        read_only_fields = ["id", "created_at", "last_modified_at"]
+
+
+class RideComplexSerializer(serializers.ModelSerializer):
     rider = UserSerializer(read_only=True)
     driver = UserSerializer(read_only=True)
     distance = serializers.FloatField(read_only=True)
