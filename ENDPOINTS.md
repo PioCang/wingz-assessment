@@ -166,11 +166,8 @@ curl -X GET "http://127.0.0.1:8000/rides/?status=init&email=johndoe@example.com&
                     "ride": 1,
                     "description": "Burnout",
                     "created_at": "2025-03-02T11:38:37.356811Z",
-                    "last_modified_at": "2025-02-27T19:29:13.184968Z"
                 }
             ],
-            "created_at": "2025-02-27T17:26:23.273620Z",
-            "last_modified_at": "2025-02-27T17:26:23.273708Z"
         }
     ]
 }

@@ -58,10 +58,8 @@ class RideBasicSerializer(serializers.ModelSerializer):
             "dropoff_latitude",
             "dropoff_longitude",
             "pickup_time",
-            "created_at",
-            "last_modified_at",
         ]
-        read_only_fields = ["id", "created_at", "last_modified_at"]
+        read_only_fields = ["id"]
 
 
 class RideComplexSerializer(serializers.ModelSerializer):
@@ -84,10 +82,8 @@ class RideComplexSerializer(serializers.ModelSerializer):
             "pickup_time",
             "distance",
             "todays_ride_events",
-            "created_at",
-            "last_modified_at",
         ]
-        read_only_fields = ["id", "created_at", "last_modified_at"]
+        read_only_fields = ["id"]
 
     def get_todays_ride_events(self, obj):
         if hasattr(obj, "todays_ride_events"):
@@ -103,6 +99,5 @@ class RideEventSerializer(serializers.ModelSerializer):
             "ride",
             "description",
             "created_at",
-            "last_modified_at",
         ]
-        read_only_fields = ["id", "created_at", "last_modified_at"]
+        read_only_fields = ["id", "created_at"]
