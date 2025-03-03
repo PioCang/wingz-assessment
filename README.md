@@ -82,8 +82,64 @@ pyenv virtualenv-delete wingz
 3. Delete the `wingz-assessment` folder
 
 ## 4 Bonus SQL question
+This CTE query is written in BigQuery flavor of SQL
 ```SQL
+--- Pair up pickup timestamps with dropoff timestamps that belong to the same
+--- ride_id. The HAVING clause ensures that we only consider completed trips
+WITH
+all_completed_trips AS (
+    SELECT
+        ride_id
+        , MAX(
+            CASE
+                WHEN description = 'Status changed to pickup'
+                    THEN created_at
+                END
+            ) AS pickup_time
+        , MAX(
+            CASE
+                WHEN description = 'Status changed to dropoff'
+                    THEN created_at
+                END
+        ) AS dropoff_time
+    FROM rideshare.ride_event
+    GROUP BY ride_id
+    HAVING pickup_time IS NOT NULL
+        AND dropoff_time IS NOT NULL
+)
 
+--- Filter out the trips that took less than or equal to one hour.
+--- 1) MILLISECOND is the granularity needed here because the DATE_DIFF function
+--- employs an implied floor() function thereby making values such as 1.0005
+--- be resolved to 1.0000
+--- 2) Dropoff_time is used to signal the termination of the trip, so it is
+--- used as the basis for which month a trip counts towards. For example, if a
+--- trip crossed over Jan 31st to Feb 1st, that trip counts towards February.
+all_completed_trips_gt_1_hr AS (
+    SELECT DISTINCT
+        FORMAT_TIMESTAMP('%Y-%m', all_completed_trips.dropoff_time) AS month
+        , CONCAT(user.first_name, ' ', LEFT(user.last_name, 1)) AS driver
+        , all_completed_trips.ride_id
+    FROM all_completed_trips
+    INNER JOIN rideshare.ride
+        ON ride.ride_id = all_completed_trips.ride_id
+    INNER JOIN rideshare.user
+        ON user.user_id = ride.user_id
+    WHERE DATE_DIFF(
+        all_completed_trips.dropoff_time, all_completed_trips.pickup_time, MILLISECOND
+    ) / 3600000 > 1
+)
+
+--- Main result
+--- Caveat: the naming convention in the example consolidates people having the
+--- same first name and first letter of surname e.g. John P and John P
+SELECT
+    month
+    , driver
+    , COUNT(DISTINCT ride_id) AS count_of_trips_gt_1hr
+FROM all_completed_trips_gt_1_hr
+GROUP BY month, driver
+ORDER BY month, driver
 ```
 
 # -- END
