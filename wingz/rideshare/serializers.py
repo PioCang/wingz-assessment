@@ -5,28 +5,10 @@ from rest_framework import serializers
 from .models import Ride, RideEvent, User
 
 
-class UserSignupSerializer(serializers.ModelSerializer):
-    """Serializer used for signing up new Users"""
+class UserSerializer(serializers.ModelSerializer):
 
     password = serializers.CharField(write_only=True)
 
-    class Meta:
-        model = User
-        fields = (
-            "username",
-            "email",
-            "first_name",
-            "last_name",
-            "role",
-            "phone_number",
-            "password",
-        )
-
-    def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
-
-
-class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
@@ -38,8 +20,12 @@ class UserSerializer(serializers.ModelSerializer):
             "phone_number",
             "role",
             "is_active",
+            "password",
         ]
         read_only_fields = ["id"]
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
 
 
 class RideBasicSerializer(serializers.ModelSerializer):

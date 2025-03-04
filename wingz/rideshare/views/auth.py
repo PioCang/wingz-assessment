@@ -11,13 +11,13 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rideshare.serializers import UserSignupSerializer
+from rideshare.serializers import UserSerializer
 
 
 class UserSignupView(generics.CreateAPIView):
     """DRF-provided registration view"""
 
-    serializer_class = UserSignupSerializer
+    serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
 
