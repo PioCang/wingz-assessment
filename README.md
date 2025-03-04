@@ -1,13 +1,13 @@
 # wingz-assessment
 
-## Foreword: Some Design choices
+## 0 Foreword: Some Design choices
 1. In the spec, primary keys take on the format `id_<model_name>`. I've simplified them to use `id` that's readily supplied by Django to be the default primary key on any table.
 2. Similarly, Foreign Keys will use just `<model_name>` as the foreign key (but under the hood Django uses `<model_name>_id`).
 3. The instructions' wording leads me to believe that a majority of the optimization concerns center around the Ride List API. Therefore, I want to make it clear that my approach to this coding assessment places utmost emphasis towards the performance and optimization efforts of the **Ride List API**. With that said, far behind is the level of care expended towards the rest of the CRUD operations on the rest of the models.
 4. I've decided to use the Haversine formula to compute for geo-distance.
 5. I made the decision to have `lat` and `lon` be required inputs for the Ride List API, with the rationale being: someone looking for a ride would likely want to see distance-to-pickup even if their sort preference is by pickup_time.
 
-## Preparations
+## 1 Preparations
 Let's prep a virtual env, I assume you have *pyenv* installed.
 For a small application, I want to avoid the memory overhead involved with Docker containers.
 
@@ -77,13 +77,14 @@ The proof that only 3 SQL queries were done for the Rides List API is in [sql_pr
 1. Stop the Django server with `Ctrl + C`
 2. Delete the environment with
 ```
+pyenv deactivate
 pyenv virtualenv-delete wingz
 ```
 3. Delete the `wingz-assessment` folder
 
 ## 4 Bonus SQL question
 This CTE query is written in BigQuery flavor of SQL
-```SQL
+```sql
 --- Pair up pickup timestamps with dropoff timestamps that belong to the same
 --- ride_id. The HAVING clause ensures that we only consider completed trips
 WITH
@@ -113,7 +114,7 @@ all_completed_trips AS (
 --- employs an implied floor() function thereby making values such as 1.0005
 --- be resolved to 1.0000
 --- 2) Dropoff_time is used to signal the termination of the trip, so it is
---- used as the basis for which month a trip counts towards. For example, if a
+--- used as the basis for which month a trip falls under. For example, if a
 --- trip crossed over Jan 31st to Feb 1st, that trip counts towards February.
 all_completed_trips_gt_1_hr AS (
     SELECT DISTINCT
