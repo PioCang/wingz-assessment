@@ -27,6 +27,13 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 
+    def update(self, instance, validated_data):
+        password = validated_data.pop("password") or None
+        if password:
+            # We cannot accept blank passwords
+            instance.set_password(password)
+        return super().update(instance, validated_data)
+
 
 class RideBasicSerializer(serializers.ModelSerializer):
     rider = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
