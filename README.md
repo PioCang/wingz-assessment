@@ -106,7 +106,7 @@ all_completed_trips AS (
     GROUP BY ride_id
     HAVING pickup_time IS NOT NULL
         AND dropoff_time IS NOT NULL
-)
+),
 
 --- Filter out the trips that took less than or equal to one hour.
 --- 1) MILLISECOND is the granularity needed here because the DATE_DIFF function
